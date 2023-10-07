@@ -37,9 +37,9 @@ const PlayerConfig = (props: PlayerConfigProps) => {
     }
 
     return (
-        <div className="inline-flex space-x-3 align-middle">
+        <div className="space-x-3 space-y-3 align-middle grid-auto-cols-auto">
             <div className="flex flex-col items-center justify-between m-auto">
-            <button onClick={() => setConfig(prevState => ({ ...prevState, running: !prevState.running }))}>{config.running ? "Stop" : "Start"}</button>
+            <button className="outline-1 outline-white outline rounded-lg w-4/5 h-4/5" onClick={() => setConfig(prevState => ({ ...prevState, running: !prevState.running }))}>{config.running ? "Stop" : "Start"}</button>
             </div>
             <br />
             <div className="inline-block m-auto">
