@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
-import { AMSynth, AutoFilter, Compressor, Distortion, FMSynth, Filter, MetalSynth, Noise, PolySynth, Reverb, Synth, now } from "tone";
 import CountDowner from "./countdowner";
+import { SplendidGrandPiano, Reverb } from "smplr";
+
+
 
 export enum Note {
     C = "C",
@@ -64,19 +66,19 @@ export const scale = (root: Note, intervals: number[]) => {
 
     console.log("Called scale with intervals: " + intervals + " and root: " + root);
     const scale = [root];
-    for (let i = 0; i < intervals.length-1; i++) {
+    for (let i = 0; i < intervals.length - 1; i++) {
         scale.push(addInterval(scale[i], intervals[i]));
     }
     return scale;
 }
 
-const arrayRotate = (arr : any[], steps : number) =>{
+const arrayRotate = (arr: any[], steps: number) => {
     let out = arr.slice();
-    for (let i=0; i < steps; i++) {
+    for (let i = 0; i < steps; i++) {
         out.push(out.shift());
     }
     return out;
-  }
+}
 
 const majorIntervals = [2, 2, 1, 2, 2, 2, 1];
 
@@ -126,7 +128,7 @@ export const pentatonicMajorScale = (root: Note) => {
     return scale(root, [2, 2, 3, 2, 3]);
 }
 
-export const pentatonicMinorScale : (root: Note) => Note[] = (root: Note) => {
+export const pentatonicMinorScale: (root: Note) => Note[] = (root: Note) => {
     console.log("Root: " + root);
     return scale(root, [3, 2, 2, 3, 2]);
 }
@@ -148,16 +150,14 @@ const NoteShower = ({ scale, wait, root }: NoteShowerProps) => {
 
     const [running, setRunning] = React.useState<boolean>(false);
 
-    const [synth, setSynth] = React.useState<PolySynth|null>(null);
+    const [synth, setSynth] = React.useState<any | null>(null);
 
     useEffect(() => {
 
-        const synth = new PolySynth(Synth).toDestination();
-        synth.connect(new Distortion(0.8).toDestination());
-        synth.connect(new Compressor(-30, 3).toDestination());
-        synth.connect(new AutoFilter("4n").toDestination());
-        synth.connect(new Reverb(0.5).toDestination());
-        setSynth(synth);
+        const context = new AudioContext();
+        const piano = new SplendidGrandPiano(context);
+        piano.output.addEffect("reverb", new Reverb(context), 0.2);
+        setSynth(piano);
     }, []);
 
     useEffect(() => {
@@ -167,7 +167,7 @@ const NoteShower = ({ scale, wait, root }: NoteShowerProps) => {
 
 
     const playNote = (n: Note) => {
-        if(!synth) {
+        if (!synth) {
             console.warn("synth not initialized");
             return;
         }
@@ -175,7 +175,7 @@ const NoteShower = ({ scale, wait, root }: NoteShowerProps) => {
         console.log("Playing note: " + n);
 
         //play a middle 'C' for the duration of an 8th note
-        synth.triggerAttackRelease([n + "3", n + "4"], "4n");
+        synth.start({ note: n + "4" });
     }
 
     const updateNote = () => {
