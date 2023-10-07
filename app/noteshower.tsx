@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import CountDowner from "./countdowner";
-import { SplendidGrandPiano, Reverb } from "smplr";
+import { ElectricPiano, SplendidGrandPiano, Reverb } from "smplr";
 
 
 
