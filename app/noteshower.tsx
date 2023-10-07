@@ -70,7 +70,7 @@ export const scale = (root: Note, intervals: number[]) => {
     return scale;
 }
 
-const arrayRotate = (arr, steps) =>{
+const arrayRotate = (arr : any[], steps : number) =>{
     let out = arr.slice();
     for (let i=0; i < steps; i++) {
         out.push(out.shift());
