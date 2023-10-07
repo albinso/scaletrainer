@@ -4,8 +4,9 @@ type CountDownerProps = {
     seconds: number;
     onDone: () => void;
     running: boolean;
+    onTick: (seconds: number) => void;
 };
-const CountDowner = ({ seconds, onDone, running } : CountDownerProps) => {
+const CountDowner = ({ seconds, onDone, running, onTick } : CountDownerProps) => {
 
     const [count, setCount] = useState<number>(seconds);
 
@@ -26,9 +27,12 @@ const CountDowner = ({ seconds, onDone, running } : CountDownerProps) => {
         setCount(seconds);
     }, [seconds]);
 
+    useEffect(() => {
+        onTick(count);
+    }, [count]);
+
     return (
         <div>
-            <h1>Next note in {count}</h1>
         </div>
     );
 }
