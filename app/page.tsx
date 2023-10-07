@@ -9,9 +9,10 @@ export default function Home() {
   const [note, setNote] = useState<Note>(Note.A);
   const [scaleFunc, setScaleFunc] = useState<(root: Note) => Note[]>(() => pentatonicMinorScale);
   const [scale, setScale] = useState<Note[]>([Note.A]);
+  const [wait, setWait] = useState<number>(5);
 
   useEffect(() => {
-    if(!scaleFunc || !note) return;
+    if (!scaleFunc || !note) return;
     console.log("Scale changed");
     console.log("Calling with " + note)
     console.log(scaleFunc);
@@ -36,7 +37,7 @@ export default function Home() {
   }
 
   useEffect(() => {
-  }, [scale]);
+  }, [scale, wait]);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -55,8 +56,13 @@ export default function Home() {
             {Object.keys(names).map((name) => <option key={name} value={name}>{name}</option>)}
           </select>
         </div>
+        <div className="flex flex-col items-center justify-between">
+          <button className="bg-gray-100 rounded-lg p-2" onClick={() => setWait(wait - 1)}>-</button>
+          <text>{wait}</text>
+          <button className="bg-gray-100 rounded-lg p-2" onClick={() => setWait(wait + 1)}>+</button>
+        </div>
         <text>{scale.join(', ')}</text>
-        <NoteShower root={note} scale={scale} wait={1} />
+        <NoteShower root={note} scale={scale} wait={wait} />
 
       </div>
     </main>

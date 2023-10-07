@@ -22,10 +22,13 @@ const CountDowner = ({ seconds, onDone, running } : CountDownerProps) => {
         return () => clearTimeout(timer);
     }, [count, setCount, running]);
 
+    useEffect(() => {
+        setCount(seconds);
+    }, [seconds]);
+
     return (
         <div>
-            <h1>CountDowner</h1>
-            <h2>{count}</h2>
+            <h1>Next note in {count}</h1>
         </div>
     );
 }

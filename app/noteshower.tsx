@@ -196,11 +196,13 @@ const NoteShower = ({ scale, wait, root }: NoteShowerProps) => {
     useEffect(() => {
     }, [note, nextNote, updateNote]);
 
+    useEffect(() => {
+    }, [wait]);
+
 
 
     return (
-        <div>
-            <h1>Note Shower</h1>
+        <div className="w-1/2">
             <h1>Root: {root}</h1>
             <h2>{note}</h2>
             <text className="text-2xl">Next: </text>
