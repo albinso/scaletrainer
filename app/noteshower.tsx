@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import CountDowner from "./countdowner";
 import { ElectricPiano, SplendidGrandPiano, Reverb } from "smplr";
-import { Note, getInterval, semitonesToNamedInterval } from "./note";
+import { Note, getInterval, majorScale, semitonesToNamedInterval } from "./note";
 import Notebox from "./notebox";
-import PlayerConfig from "./playerconfig";
+import PlayerConfig, { PlayerConfigState } from "./playerconfig";
 
 
 
@@ -11,20 +11,26 @@ import PlayerConfig from "./playerconfig";
 
 
 type NoteShowerProps = {
-    scale: Note[];
     wait: number;
-    root: Note;
 };
 
-const NoteShower = ({ scale, wait, root }: NoteShowerProps) => {
+const NoteShower = ({ wait }: NoteShowerProps) => {
 
-    const [note, setNote] = React.useState<Note>(scale[0]);
+    const [root, setRoot] = React.useState<Note>(Note.C);
 
-    const [nextNote, setNextNote] = React.useState<Note>(scale[1]);
+    const [note, setNote] = React.useState<Note>(Note.C);
+
+    const [nextNote, setNextNote] = React.useState<Note>(Note.D);
 
     const [running, setRunning] = React.useState<boolean>(false);
 
     const [synth, setSynth] = React.useState<any | null>(null);
+
+    const [waitTime, setWaitTime] = React.useState<number>(wait);
+
+    const [scale, setScale] = React.useState<Note[]>([Note.C]);
+
+    const [scaleFunc, setScaleFunc] = React.useState<(root: Note) => Note[]>(() => majorScale);
 
     useEffect(() => {
 
@@ -71,7 +77,11 @@ const NoteShower = ({ scale, wait, root }: NoteShowerProps) => {
     }, [note, nextNote, updateNote]);
 
     useEffect(() => {
-    }, [wait]);
+    }, [wait, scale]);
+
+    useEffect(() => {
+        setScale(scaleFunc(root));
+    }, [root, scaleFunc]);
 
     const [countdown, setCountdown] = useState(0);
 
@@ -79,16 +89,20 @@ const NoteShower = ({ scale, wait, root }: NoteShowerProps) => {
 
     return (
         <div>
-            <Notebox note={nextNote} prevNote={note} countdown={countdown} interval={semitonesToNamedInterval(getInterval(root, nextNote))} semitones={getInterval(root, nextNote)} />
+            <Notebox note={nextNote} showNote={showNote} prevNote={note} countdown={countdown} interval={semitonesToNamedInterval(getInterval(root, nextNote))} showInterval={showInterval} semitones={getInterval(root, nextNote)} showSemitones={showSemitones} root={root} />
             <br />
-            <PlayerConfig updateState={(state) => {
+            <PlayerConfig updateState={(state : PlayerConfigState) => {
                 setShowInterval(state.showInterval);
                 setShowSemitones(state.showSemitones);
                 setShowNote(state.showNote);
                 setRunning(state.running);
+                setWaitTime(state.wait);
+                setRoot(state.note);
+                setScaleFunc(() => state.scaleFunc);
+                
             }} scale={scale}/>
             
-            <CountDowner seconds={wait} running={running} onDone={() => {
+            <CountDowner seconds={waitTime} running={running} onDone={() => {
                 playNote(nextNote);
                 updateNote();
             }} onTick={(seconds : number) => {

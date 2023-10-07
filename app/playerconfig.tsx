@@ -6,11 +6,21 @@ type PlayerConfigProps = {
     scale: Note[];
 };
 
+export type PlayerConfigState = {
+    note: Note;
+    scaleFunc: (root: Note) => Note[];
+    wait: number;
+    showNote: boolean;
+    showInterval: boolean;
+    showSemitones: boolean;
+    running: boolean;
+};
+
 const PlayerConfig = (props: PlayerConfigProps) => {
 
-    const [config, setConfig] = useState({
+    const [config, setConfig] = useState<PlayerConfigState>({
         note: Note.C,
-        scaleFunc: () => majorScale,
+        scaleFunc: majorScale,
         wait: 5,
         showNote: true,
         showInterval: true,
@@ -21,6 +31,9 @@ const PlayerConfig = (props: PlayerConfigProps) => {
     useEffect(() => {
         props.updateState(config);
     }, [config]);
+
+    useEffect(() => {
+    }, [props.scale]);
 
     const scaleFuncs: any = {
         major: majorScale,

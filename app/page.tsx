@@ -32,7 +32,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10  w-full items-center justify-between content-center font-mono text-sm lg:flex">
         
-        <NoteShower root={note} scale={scale} wait={wait} />
+        <NoteShower wait={wait} />
         
 
       </div>
